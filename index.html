@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090d18"><title>MIAMI XFINITY | مشغل الروابط</title>
+<style>
+:root{--bg:#080c16;--panel:#111b2b;--line:#293950;--text:#f3f6fb;--muted:#95a5bb;--gold:#e7b957}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 0%,#1b2b45,transparent 38%),var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif}
+header{padding:17px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:#080c16eF;position:sticky;top:0;z-index:4}
+.brand{display:flex;gap:12px;align-items:center}.logo{width:45px;height:45px;border-radius:14px;background:linear-gradient(135deg,#f0cb75,#95621d);display:grid;place-items:center;color:#111827;font-weight:900}.brand h1{font-size:18px;margin:0}.brand small{display:block;color:var(--muted);margin-top:4px}
+.pill{border:1px solid #3b4c65;border-radius:25px;padding:8px 12px;font-size:12px;color:#d2dbea}
+main{max-width:1450px;margin:auto;padding:18px;display:grid;grid-template-columns:minmax(0,1.8fr) minmax(300px,1fr);gap:18px}
+.card{background:linear-gradient(145deg,#142033,#0e1624);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 14px 38px #0004}
+.screen{aspect-ratio:16/9;background:#000;position:relative;display:grid;place-items:center}video{width:100%;height:100%;max-height:75vh;background:#000}.placeholder{position:absolute;text-align:center;color:#9baac0;pointer-events:none}.placeholder b{display:block;color:white;font-size:20px;margin-bottom:8px}
+.now{padding:15px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.now h2{font-size:16px;margin:0 0 5px}.now p{font-size:12px;color:var(--muted);margin:0}
+.actions{display:flex;gap:8px;flex-wrap:wrap;padding:0 18px 17px}button,select,input{font:inherit}button{background:#1c2b42;color:#f1f5fa;border:1px solid #3a4b64;padding:10px 13px;border-radius:10px;cursor:pointer;font-size:13px}button:hover{border-color:var(--gold);color:var(--gold)}button.primary{background:linear-gradient(135deg,#efc66e,#b77e25);color:#151a22;border:0;font-weight:bold}
+.list-head{padding:16px;border-bottom:1px solid var(--line)}.list-head h3{margin:0 0 12px;font-size:16px}.search-row{display:flex;gap:8px}.search-row input{min-width:0;width:100%;background:#0a1220;color:white;border:1px solid #394a62;border-radius:10px;padding:11px;outline:none}.count{font-size:12px;color:var(--muted);margin-top:10px}
+.items{height:min(66vh,720px);overflow:auto;padding:8px}.item{display:flex;align-items:center;gap:11px;padding:11px;border:1px solid transparent;border-radius:12px;cursor:pointer}.item:hover{background:#1a2940}.item.active{background:#26364e;border-color:#a17b3b}.item-icon{width:42px;height:42px;border-radius:10px;background:#e8edf3;color:#1b2738;display:grid;place-items:center;flex:none;font-weight:bold;overflow:hidden}.item-icon img{width:100%;height:100%;object-fit:contain}.info{min-width:0;flex:1}.info strong{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.info small{display:block;color:var(--muted);font-size:11px;margin-top:4px}.state{font-size:10px;color:#79d7a6}
+.empty{text-align:center;color:var(--muted);padding:28px}.footer{max-width:1450px;margin:auto;padding:0 18px 22px;color:#77869b;font-size:11px;line-height:1.8}
+@media(max-width:900px){main{grid-template-columns:1fr;padding:10px}.items{height:48vh}header{padding:13px}.brand h1{font-size:15px}}
+</style></head>
+<body>
+<header><div class="brand"><div class="logo">MX</div><div><h1>MIAMI XFINITY</h1><small>مشغل الروابط المباشرة</small></div></div><div class="pill" id="total">تحميل القائمة…</div></header>
+<main>
+<section class="card"><div class="screen"><video id="video" controls playsinline></video><div class="placeholder" id="placeholder"><b>اختر رابطاً للتشغيل</b><span>حدد أحد العناصر من القائمة</span></div></div>
+<div class="now"><div><h2 id="current">لم يتم اختيار رابط</h2><p id="subtitle">MIAMI XFINITY • JSON</p></div><span class="pill" id="status">جاهز</span></div>
+<div class="actions"><button class="primary" id="play">▶ تشغيل</button><button id="stop">■ إيقاف</button><button id="full">⛶ ملء الشاشة</button><button id="mute">🔊 كتم الصوت</button></div></section>
+<aside class="card"><div class="list-head"><h3>قائمة الروابط</h3><div class="search-row"><input id="search" type="search" placeholder="ابحث بالاسم أو التصنيف…"></div><div class="count" id="count"></div></div><div class="items" id="items"></div></aside>
+</main>
+<div class="footer">تم استبدال قائمة M3U ببيانات ملف JSON الجديد. قد تتطلب بعض الروابط صيغة بث أو صلاحيات خاصة، ويعتمد التشغيل على توفر المصدر ودعم المتصفح.</div>
+<script>
+const streams=[{"name": "باقة: Rotana: Khalejia FHD", "url": "http://worldcup4k.tv/get.php?username=4834980186&password=0231167428&type=m3u_plus&output=m3u8", "group": "روابط مباشرة", "logo": "", "status": "online"}, {"name": "باقة: beIN Sport English 01 HD/SD", "url": "http://realradiowave.co.uk/get.php?username=Total5Regret&password=x7pfYbgBuW&type=m3u_plus&output=m3u8", "group": "روابط مباشرة", "logo": "", "status": "online"}, {"name": "باقة: beIN Sport 1 4k", "url": "http://gggd.top:8080/get.php?username=96599988085&password=210248231252&type=m3u_plus&output=m3u8", "group": "روابط مباشرة", "logo": "", "status": "online"}, {"name": "باقة: AD SPORTS 1 FHD", "url": "http://play-plus.net/get.php?username=0661379434&password=abmq9lnrw8&type=m3u_plus&output=m3u8", "group": "روابط مباشرة", "logo": "", "status": "online"}, {"name": "باقة: -----nederland----- HD", "url": "http://restreamott.xyz/get.php?username=restreamtreetv&password=Arenatomas11&type=m3u_plus&output=m3u8", "group": "روابط مباشرة", "logo": "", "status": "online"}, {"name": "باقة: Six Kings Slam", "url": "http://hyprime.org/get.php?username=AlaaSabagh&password=A48w839&type=m3u_plus&output=m3u8", "group": "روابط مباشرة", "logo": "", "status": "online"}, {"name": "باقة: AR: BEIN SPORTS 1", "url": "http://31.43.191.125:8080/get.php?username=vip6001770656088&password=c394e34a0504&type=m3u_plus&output=m3u8", "group": "روابط مباشرة", "logo": "", "status": "online"}, {"name": "باقة: Rotana: Khalejia FHD", "url": "http://10193333.xyz/get.php?username=4110041579&password=8414193074&type=m3u_plus&output=m3u8", "group": "روابط مباشرة", "logo": "", "status": "online"}, {"name": "باقة: -•✬● FR | TNT FRANCE | FR ●✬•-", "url": "http://4kpro2.com/get.php?username=Oxytv&password=852147&type=m3u_plus&output=m3u8", "group": "روابط مباشرة", "logo": "", "status": "online"}, {"name": "باقة: -•✬● FR | TNT FRANCE | FR ●✬•-", "url": "http://iprofox.com/get.php?username=LKMA38399&password=GFDA33333&type=m3u_plus&output=m3u8", "group": "روابط مباشرة", "logo": "", "status": "online"}, {"name": "باقة: ┃AL┃ BIG BROTHER VIP KOSOVA 1 HEVC", "url": "http://line.conex-tivi.cc/get.php?username=R6GJ59&password=W1FHJP&type=m3u_plus&output=m3u8", "group": "روابط مباشرة", "logo": "", "status": "online"}, {"name": "باقة: Six Kings Slam", "url": "http://n7s.top/get.php?username=ghadax88&password=0569777788&type=m3u_plus&output=m3u8", "group": "روابط مباشرة", "logo": "", "status": "online"}, {"name": "باقة: |NO| NRK 1 ᴴᴰ", "url": "http://planet4k.xyz/get.php?username=KasiaPremium25&password=uwriydidir&type=m3u_plus&output=m3u8", "group": "روابط مباشرة", "logo": "", "status": "online"}, {"name": "باقة: Rotana: Khalejia FHD", "url": "http://octopustv.xyz/get.php?username=1886727672&password=9698357522&type=m3u_plus&output=m3u8", "group": "روابط مباشرة", "logo": "", "status": "online"}, {"name": "باقة: Rotana: Khalejia FHD", "url": "http://falcon-sa.xyz/get.php?username=5987441942&password=3275942594&type=m3u_plus&output=m3u8", "group": "روابط مباشرة", "logo": "", "status": "online"}, {"name": "باقة: --• ✬● AR | ARABIC NEWS | AR ●✬•--", "url": "http://leternel.ottpro2.org:8789/get.php?username=Gob735vzvs&password=nsYz3pS&type=m3u_plus&output=m3u8", "group": "روابط مباشرة", "logo": "", "status": "online"}];
+let selected=-1;
+const video=document.getElementById('video');
+function render(){
+ const q=document.getElementById('search').value.trim().toLowerCase();
+ const shown=streams.map((x,i)=>({...x,index:i})).filter(x=>(x.name+' '+x.group).toLowerCase().includes(q));
+ document.getElementById('count').textContent=`عرض ${shown.length} من ${streams.length}`;
+ const host=document.getElementById('items');host.innerHTML='';
+ if(!shown.length){host.innerHTML='<div class="empty">لا توجد نتائج</div>';return}
+ shown.forEach(x=>{
+  const el=document.createElement('div');el.className='item'+(x.index===selected?' active':'');
+  const icon=document.createElement('div');icon.className='item-icon';
+  if(x.logo){const im=document.createElement('img');im.src=x.logo;im.onerror=()=>{icon.textContent='▶'};icon.append(im)}else icon.textContent='▶';
+  const info=document.createElement('div');info.className='info';
+  const name=document.createElement('strong');name.textContent=x.name;
+  const group=document.createElement('small');group.textContent=x.group;
+  info.append(name,group);
+  const status=document.createElement('span');status.className='state';status.textContent=x.status||'رابط';
+  el.append(icon,info,status);el.onclick=()=>playStream(x.index);host.append(el);
+ });
+}
+function setStatus(s){document.getElementById('status').textContent=s}
+function playStream(i){
+ const x=streams[i];if(!x)return;selected=i;
+ document.getElementById('current').textContent=x.name;
+ document.getElementById('subtitle').textContent=x.group;
+ document.getElementById('placeholder').style.display='none';
+ setStatus('جاري الاتصال…');render();
+ video.pause();video.removeAttribute('src');video.load();video.src=x.url;
+ video.play().then(()=>setStatus('يعمل الآن')).catch(()=>setStatus('اضغط تشغيل أو تعذر التشغيل'));
+}
+document.getElementById('search').addEventListener('input',render);
+document.getElementById('play').onclick=()=>{if(selected<0){if(streams.length)playStream(0)}else video.play().then(()=>setStatus('يعمل الآن')).catch(()=>setStatus('تعذر التشغيل'))};
+document.getElementById('stop').onclick=()=>{video.pause();video.removeAttribute('src');video.load();setStatus('متوقف');document.getElementById('placeholder').style.display='grid'};
+document.getElementById('full').onclick=()=>{const el=document.querySelector('.screen');if(el.requestFullscreen)el.requestFullscreen();else if(video.webkitEnterFullscreen)video.webkitEnterFullscreen()};
+document.getElementById('mute').onclick=()=>{video.muted=!video.muted;document.getElementById('mute').textContent=video.muted?'🔇 إلغاء الكتم':'🔊 كتم الصوت'};
+document.getElementById('total').textContent=`${streams.length} رابط مضمّن`;
+render();
+</script></body></html>
